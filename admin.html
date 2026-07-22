@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Админ-панель - Los-Santos FM</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="stylesheet" href="/src/styles.css">
+    <link rel="stylesheet" href="/src/admin-styles.css">
+    <!-- Quill WYSIWYG Editor -->
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Admin Header -->
+    <div class="admin-header">
+        <div class="admin-header-content">
+            <div class="admin-logo">
+                <span class="logo-text">LSFM</span>
+                <span class="admin-badge">ADMIN</span>
+            </div>
+            <div class="admin-nav">
+                <a href="/index.html" class="btn-back-home">← На сайт</a>
+                <button class="btn-logout" id="adminLogoutBtn">Выйти</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Tabs -->
+    <div class="admin-tabs">
+        <button class="admin-tab active" data-tab="programs">📻 Программы</button>
+        <button class="admin-tab" data-tab="broadcasts">📝 Архив эфиров</button>
+        <button class="admin-tab" data-tab="authors">👤 Авторы</button>
+        <button class="admin-tab" data-tab="learning">📚 Обучение</button>
+    </div>
+
+    <!-- Admin Content -->
+    <div class="admin-container">
+        <!-- Programs Tab -->
+        <div class="admin-tab-content active" id="programs-tab">
+            <div class="admin-section-header">
+                <h2>Управление программами</h2>
+                <button class="btn-primary" id="addProgramAdminBtn">+ Добавить программу</button>
+            </div>
+            
+            <div class="admin-table-container">
+                <table class="admin-table" id="programsTable">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Название</th>
+                            <th>Автор</th>
+                            <th>Дата создания</th>
+                            <th>Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody id="programsTableBody">
+                        <tr>
+                            <td colspan="5" style="text-align: center; padding: 2rem;">
+                                Загрузка...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Broadcasts Tab -->
+        <div class="admin-tab-content" id="broadcasts-tab">
+            <div class="admin-section-header">
+                <h2>Архив эфиров</h2>
+                <div class="filter-group">
+                    <label>Фильтр по программе:</label>
+                    <select id="filterByProgram" class="admin-select">
+                        <option value="">Все программы</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="admin-table-container">
+                <table class="admin-table" id="broadcastsTable">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Программа</th>
+                            <th>Дата эфира</th>
+                            <th>Есть ссылка</th>
+                            <th>Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody id="broadcastsTableBody">
+                        <tr>
+                            <td colspan="5" style="text-align: center; padding: 2rem;">
+                                Загрузка...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Authors Tab -->
+        <div class="admin-tab-content" id="authors-tab">
+            <div class="admin-section-header">
+                <h2>Авторы программ</h2>
+            </div>
+            
+            <div class="admin-table-container">
+                <table class="admin-table" id="authorsTable">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Имя (игровой ник)</th>
+                            <th>Дата регистрации</th>
+                            <th>Программа</th>
+                            <th>Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody id="authorsTableBody">
+                        <tr>
+                            <td colspan="5" style="text-align: center; padding: 2rem;">
+                                Загрузка...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Learning Tab -->
+        <div class="admin-tab-content" id="learning-tab">
+            <div class="admin-section-header">
+                <h2>Обучающие материалы</h2>
+                <button class="btn-primary" id="addLearningBtn">+ Добавить материал</button>
+            </div>
+            
+            <div class="learning-items" id="learningItems">
+                <div style="text-align: center; padding: 2rem; color: var(--text-secondary);">
+                    Загрузка...
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Container -->
+    <div id="adminModalContainer"></div>
+
+    <!-- Quill Editor -->
+    <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+    <script type="module" src="/src/admin.js"></script>
+</body>
+</html>

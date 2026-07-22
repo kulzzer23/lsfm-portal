@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Los-Santos FM - Радиоцентр</title>
+    <meta name="description" content="Официальный портал радиоцентра Los-Santos FM - Программа эфиров, обучение, экзамены">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="stylesheet" href="/src/styles.css">
+</head>
+<body>
+    <!-- Hero Section -->
+    <div class="hero">
+        <div class="hero-content">
+            <div class="logo-container">
+                <div class="logo-badge">
+                    <span class="logo-text">LSFM</span>
+                </div>
+            </div>
+            <h1 class="hero-title">Los-Santos FM</h1>
+            <p class="hero-subtitle">Радиоцентр штата San Andreas</p>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="main-nav">
+        <button class="nav-btn active" data-section="home">
+            <span class="nav-icon">🏠</span>
+            <span class="nav-text">Главная</span>
+        </button>
+        <button class="nav-btn" data-section="schedule">
+            <span class="nav-icon">📻</span>
+            <span class="nav-text">Программы</span>
+        </button>
+        <button class="nav-btn" data-section="learning">
+            <span class="nav-icon">📚</span>
+            <span class="nav-text">Обучение</span>
+        </button>
+        <button class="nav-btn" data-section="info">
+            <span class="nav-icon">ℹ️</span>
+            <span class="nav-text">Информация</span>
+        </button>
+    </nav>
+
+    <!-- Main Content Container -->
+    <main class="main-container">
+        <!-- Home Section -->
+        <section id="home" class="content-section active">
+            <div class="welcome-card">
+                <h2>Добро пожаловать в Los-Santos FM</h2>
+                <p>Официальный радиоцентр штата San Andreas. Здесь вы найдёте программы наших авторов, сможете пройти обучение и сдать экзамен.</p>
+                
+                <div class="quick-links">
+                    <a href="#" class="quick-link-card forum-link">
+                        <div class="quick-link-icon">💬</div>
+                        <h3>Форум</h3>
+                        <p>Обсуждения и новости</p>
+                    </a>
+                    
+                    <a href="https://kulzzer23.github.io/mmblue/" target="_blank" class="quick-link-card exam-link">
+                        <div class="quick-link-icon">📝</div>
+                        <h3>Сдать экзамен</h3>
+                        <p>Проверьте свои знания</p>
+                    </a>
+                    
+                    <a href="#" class="quick-link-card learning-link" data-navigate="learning">
+                        <div class="quick-link-icon">📚</div>
+                        <h3>Обучение</h3>
+                        <p>Изучите материалы</p>
+                    </a>
+                    
+                    <a href="#" class="quick-link-card info-link" data-navigate="info">
+                        <div class="quick-link-icon">ℹ️</div>
+                        <h3>Информация</h3>
+                        <p>О радиоцентре</p>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Schedule Section -->
+        <section id="schedule" class="content-section">
+            <div class="section-header">
+                <h2>Программы эфиров</h2>
+                <p>Выберите программу для просмотра деталей и архива эфиров</p>
+            </div>
+
+            <div class="programs-grid" id="programsContainer">
+                <!-- Programs will be loaded here -->
+            </div>
+
+            <!-- Author Controls -->
+            <div class="author-controls" id="authorControls" style="display: none;">
+                <button class="btn-primary" id="createProgramBtn">+ Создать мою программу</button>
+            </div>
+        </section>
+
+        <!-- Program Detail Section -->
+        <section id="program-detail" class="content-section">
+            <div id="programDetailContent">
+                <!-- Program details will be loaded here -->
+            </div>
+        </section>
+
+        <!-- Learning Section -->
+        <section id="learning" class="content-section">
+            <div class="section-header">
+                <h2>Обучение</h2>
+                <p>Изучите материалы перед сдачей экзамена</p>
+            </div>
+
+            <div class="learning-content" id="learningContent">
+                <div class="learning-card">
+                    <h3>Правила эфира</h3>
+                    <p>Основные правила ведения радиоэфира, этикет и профессиональные стандарты.</p>
+                </div>
+                <div class="learning-card">
+                    <h3>Техническое оборудование</h3>
+                    <p>Работа с радиооборудованием, микрофонами и звуковыми системами.</p>
+                </div>
+                <div class="learning-card">
+                    <h3>Создание контента</h3>
+                    <p>Подготовка программ, работа с музыкой и создание интересного контента.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Info Section -->
+        <section id="info" class="content-section">
+            <div class="section-header">
+                <h2>Информация</h2>
+                <p>О радиоцентре Los-Santos FM</p>
+            </div>
+
+            <div class="info-content">
+                <div class="info-card">
+                    <h3>О нас</h3>
+                    <p>Los-Santos FM - крупнейший радиоцентр штата San Andreas, объединяющий радиостанции Los-Santos, San-Fierro и Las-Venturas.</p>
+                </div>
+                <div class="info-card">
+                    <h3>Наши станции</h3>
+                    <ul>
+                        <li><strong>LSFM</strong> - Los-Santos FM</li>
+                        <li><strong>SFFM</strong> - San-Fierro FM</li>
+                        <li><strong>LVFM</strong> - Las-Venturas FM</li>
+                    </ul>
+                </div>
+                <div class="info-card">
+                    <h3>Контакты</h3>
+                    <p>Министр связи и коммуникаций: Vincent_Stefano</p>
+                    <p>Частота: 100.0 FM</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Author Login Button -->
+    <button class="admin-login-btn" id="authorLoginBtn" title="Вход для авторов">👤</button>
+    
+    <!-- Admin Panel Link -->
+    <a href="/admin.html" class="admin-panel-link" title="Админ-панель">⚙️</a>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2026 Los-Santos FM. Все права защищены.</p>
+    </footer>
+
+    <!-- Modals will be injected by JavaScript -->
+    <div id="modalContainer"></div>
+
+    <script type="module" src="/src/main.js"></script>
+</body>
+</html>
