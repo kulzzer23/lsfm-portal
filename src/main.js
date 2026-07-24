@@ -68,6 +68,8 @@ function navigateToSection(sectionId) {
     if (sectionId === 'schedule') {
         loadPrograms();
         updateAuthorUI();
+    } else if (sectionId === 'leadership') {
+        loadLeadership();
     }
 }
 
@@ -802,11 +804,151 @@ window.deleteBroadcast = async function(broadcastId) {
     }
 };
 
-// Make navigateToSection available globally
+// Leadership Section
+function loadLeadership() {
+    const leadershipContent = document.getElementById('leadershipContent');
+    if (!leadershipContent) return;
+    
+    // Get current URL for copy link functionality
+    const currentUrl = window.location.href.split('#')[0] + '#leadership';
+    
+    // Leadership data structure with rank limits
+    const leadershipData = [
+        {
+            rank: 10,
+            rankName: 'Директор',
+            limit: 1,
+            positions: [
+                { name: 'Henry Urban', position: 'Директор', phone: '873', photo: 'https://i.imgur.com/L0ATYfb.png' }
+                // Add your leadership members here
+                // Example: { name: 'John_Smith', position: 'Директор', phone: '555-0001', photo: 'https://example.com/photo.jpg' }
+            ]
+        },
+        {
+            rank: 9,
+            rankName: 'Заместители',
+            limit: 4,
+            positions: [
+                { name: 'Wu Ji', position: 'Заместитель Директора', phone: '---', photo: 'https://i.imgur.com/TIR7jpA.png' }
+                // Add your leadership members here
+                // Example: { name: 'John_Smith', position: 'Директор', phone: '555-0001', photo: 'https://example.com/photo.jpg' }
+            ]
+        },
+        {
+            rank: 8,
+            rankName: 'Редактор',
+            limit: 6,
+            positions: [{ name: 'Felix Davinci', position: 'Редактор', phone: '---', photo: 'https://i.imgur.com/TIR7jpA.png' }]
+        },
+        {
+            rank: 7,
+            rankName: '7 ранг',
+            limit: 8,
+            positions: []
+        }
+    ];
+    
+    leadershipContent.innerHTML = `
+        <button class="copy-section-link" id="copyLeadershipLink">
+            🔗 Скопировать ссылку на этот раздел
+        </button>
+        
+        ${leadershipData.map(rankData => `
+            <div class="rank-section">
+                <div class="rank-header">
+                    <div class="rank-title">
+                        <span class="rank-badge">${rankData.rank}</span>
+                        <span>${rankData.rankName}</span>
+                    </div>
+                    <div class="rank-limit">
+                        Лимит: ${rankData.positions.length} / ${rankData.limit} мест
+                    </div>
+                </div>
+                
+                <div class="leaders-grid">
+                    ${rankData.positions.map(leader => `
+                        <div class="leader-card">
+                            <div class="leader-photo">
+                                ${leader.photo 
+                                    ? `<img src="${leader.photo}" alt="${leader.name}">`
+                                    : '👤'
+                                }
+                            </div>
+                            <div class="leader-position">${leader.position}</div>
+                            <div class="leader-name">${leader.name}</div>
+                            <div class="leader-phone" onclick="copyToClipboard('${leader.phone}')">
+                                📞 ${leader.phone}
+                            </div>
+                        </div>
+                    `).join('')}
+                    
+                    ${Array(rankData.limit - rankData.positions.length).fill(0).map(() => `
+                        <div class="empty-slot">
+                            Вакансия
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+        `).join('')}
+    `;
+    
+    // Attach copy link event listener
+    const copyLinkBtn = document.getElementById('copyLeadershipLink');
+    if (copyLinkBtn) {
+        copyLinkBtn.addEventListener('click', () => {
+            copyToClipboard(currentUrl);
+            copyLinkBtn.textContent = '✓ Ссылка скопирована!';
+            setTimeout(() => {
+                copyLinkBtn.innerHTML = '🔗 Скопировать ссылку на этот раздел';
+            }, 2000);
+        });
+    }
+}
+
+// Copy to clipboard helper
+function copyToClipboard(text) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(() => {
+            console.log('Copied to clipboard:', text);
+        }).catch(err => {
+            console.error('Failed to copy:', err);
+            fallbackCopyToClipboard(text);
+        });
+    } else {
+        fallbackCopyToClipboard(text);
+    }
+}
+
+function fallbackCopyToClipboard(text) {
+    const textArea = document.createElement('textarea');
+    textArea.value = text;
+    textArea.style.position = 'fixed';
+    textArea.style.left = '-999999px';
+    document.body.appendChild(textArea);
+    textArea.select();
+    try {
+        document.execCommand('copy');
+        console.log('Copied to clipboard (fallback):', text);
+    } catch (err) {
+        console.error('Fallback copy failed:', err);
+    }
+    document.body.removeChild(textArea);
+}
+
+// Make functions available globally
 window.navigateToSection = navigateToSection;
+window.copyToClipboard = copyToClipboard;
 
 // Initialize app
 document.addEventListener('DOMContentLoaded', () => {
     checkAuthorAuth();
     navigateToSection('home');
+    
+    // Check if URL has hash for direct navigation
+    if (window.location.hash) {
+        const sectionId = window.location.hash.substring(1);
+        if (sectionId) {
+            setTimeout(() => navigateToSection(sectionId), 100);
+        }
+    }
 });
