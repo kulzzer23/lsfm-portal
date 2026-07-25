@@ -43,9 +43,6 @@ function showLoginModal() {
                     <label for="adminPasswordInput">Пароль администратора:</label>
                     <input type="password" id="adminPasswordInput" placeholder="Введите пароль" style="width: 100%;">
                 </div>
-                <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 1rem;">
-                    Пароль по умолчанию: <code style="background: var(--bg-secondary); padding: 0.25rem 0.5rem; border-radius: 4px;">admin2026</code>
-                </p>
             </div>
             <div class="admin-modal-footer">
                 <button class="btn-primary" id="adminLoginBtn">Войти</button>
