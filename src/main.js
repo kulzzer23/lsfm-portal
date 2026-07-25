@@ -70,6 +70,8 @@ function navigateToSection(sectionId) {
         updateAuthorUI();
     } else if (sectionId === 'leadership') {
         loadLeadership();
+    } else if (sectionId === 'staff') {
+        loadStaff();
     }
 }
 
@@ -903,6 +905,186 @@ function loadLeadership() {
             }, 2000);
         });
     }
+}
+
+// Staff Section
+function loadStaff() {
+    const staffContent = document.getElementById('staffContent');
+    if (!staffContent) return;
+
+    const baseUrl = window.location.href.split('#')[0];
+    const staffUrl = baseUrl + '#staff';
+//members: [
+//    { name: 'John_Smith', position: 'Контролёр', phone: '555', photo: 'https://...' }
+// ]
+
+    // Department data: each dept has a curator card + subsection with ranked members
+    const departments = [
+        {
+            id: 'dept-quality-publishing',
+            icon: '📰',
+            name: 'Отдел Контроля Качества Издательства',
+            shortName: 'ОКК Издательства',
+            curator: {
+                name: 'Вакансия',
+                role: 'Куратор отдела',
+                photo: null
+            },
+            ranks: [
+                { rank: 10, rankName: 'Куратор Отдела', limit: 1, members: [] },
+                { rank: 5, rankName: 'Помощники Куратора и редакторы материала', limit: 2, members: [] }
+            ]
+        },
+        {
+            id: 'dept-quality-editing',
+            icon: '✏️',
+            name: 'Отдел Контроля Качества Редактуры Объявлений',
+            shortName: 'ОКК Редактуры',
+            curator: {
+                name: 'Вакансия',
+                role: 'Куратор отдела',
+                photo: null
+            },
+            ranks: [
+                { rank: 10, rankName: 'Куратор Отдела', limit: 1, members: [] },
+                { rank: 5, rankName: 'Помощники Куратора', limit: 2, members: [] }
+            ]
+        },
+        {
+            id: 'dept-quality-broadcast',
+            icon: '🎙️',
+            name: 'Отдел Контроля Качества Проведения Эфиров',
+            shortName: 'ОКК Эфиров',
+            curator: {
+                name: 'Вакансия',
+                role: 'Куратор отдела',
+                photo: null
+            },
+            ranks: [
+                { rank: 10, rankName: 'Куратор Отдела', limit: 1, members: [] },
+                { rank: 5, rankName: 'Помощники Куратора', limit: 2, members: [] }
+            ]
+        }
+    ];
+
+    // Build HTML: copy-link button + curator nav cards + hidden subsections
+    staffContent.innerHTML = `
+        <button class="copy-section-link" id="copyStaffLink">
+            🔗 Скопировать ссылку на этот раздел
+        </button>
+
+        <div class="dept-nav-grid" id="deptNavGrid">
+            ${departments.map(dept => `
+                <div class="dept-nav-card" data-dept="${dept.id}" role="button" tabindex="0"
+                     aria-label="Перейти к разделу ${dept.name}">
+                    <div class="dept-curator-photo">
+                        ${dept.curator.photo
+                            ? `<img src="${dept.curator.photo}" alt="${dept.curator.name}">`
+                            : dept.icon}
+                    </div>
+                    <div class="dept-curator-role">${dept.curator.role}</div>
+                    <div class="dept-curator-name">${dept.curator.name}</div>
+                    <div class="dept-nav-label">${dept.name}</div>
+                    <span class="dept-nav-arrow">↓</span>
+                </div>
+            `).join('')}
+        </div>
+
+        ${departments.map(dept => `
+            <div class="dept-subsection" id="${dept.id}">
+                <div class="dept-subsection-header">
+                    <div class="dept-subsection-title">
+                        <span class="dept-subsection-icon">${dept.icon}</span>
+                        ${dept.name}
+                    </div>
+                    <button class="dept-back-btn" data-dept-close="${dept.id}">
+                        ↑ Свернуть
+                    </button>
+                </div>
+
+                ${dept.ranks.map(rankData => `
+                    <div class="rank-section" style="margin-bottom: 2rem;">
+                        <div class="rank-header">
+                            <div class="rank-title">
+                                <span class="rank-badge">${rankData.rank}</span>
+                                <span>${rankData.rankName}</span>
+                            </div>
+                            <div class="rank-limit">
+                                Лимит: ${rankData.members.length} / ${rankData.limit} мест
+                            </div>
+                        </div>
+                        <div class="leaders-grid">
+                            ${rankData.members.map(member => `
+                                <div class="leader-card">
+                                    <div class="leader-photo">
+                                        ${member.photo
+                                            ? `<img src="${member.photo}" alt="${member.name}">`
+                                            : '👤'}
+                                    </div>
+                                    <div class="leader-position">${member.position}</div>
+                                    <div class="leader-name">${member.name}</div>
+                                    <div class="leader-phone" onclick="copyToClipboard('${member.phone}')">
+                                        📞 ${member.phone}
+                                    </div>
+                                </div>
+                            `).join('')}
+                            ${Array(rankData.limit - rankData.members.length).fill(0).map(() => `
+                                <div class="empty-slot">Вакансия</div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+        `).join('')}
+    `;
+
+    // Copy link button
+    const copyLinkBtn = document.getElementById('copyStaffLink');
+    if (copyLinkBtn) {
+        copyLinkBtn.addEventListener('click', () => {
+            copyToClipboard(staffUrl);
+            copyLinkBtn.textContent = '✓ Ссылка скопирована!';
+            setTimeout(() => {
+                copyLinkBtn.innerHTML = '🔗 Скопировать ссылку на этот раздел';
+            }, 2000);
+        });
+    }
+
+    // Nav card clicks — toggle subsection
+    staffContent.querySelectorAll('.dept-nav-card').forEach(card => {
+        const activate = () => {
+            const deptId = card.dataset.dept;
+            const subsection = document.getElementById(deptId);
+            const isOpen = subsection.classList.contains('active-subsection');
+
+            // Close all subsections and deactivate all nav cards
+            staffContent.querySelectorAll('.dept-subsection').forEach(s => s.classList.remove('active-subsection'));
+            staffContent.querySelectorAll('.dept-nav-card').forEach(c => c.classList.remove('active-dept'));
+
+            if (!isOpen) {
+                subsection.classList.add('active-subsection');
+                card.classList.add('active-dept');
+                // Smooth scroll to subsection
+                setTimeout(() => subsection.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+            }
+        };
+
+        card.addEventListener('click', activate);
+        card.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); activate(); }
+        });
+    });
+
+    // Close/collapse buttons inside subsections
+    staffContent.querySelectorAll('[data-dept-close]').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const deptId = btn.dataset.deptClose;
+            document.getElementById(deptId).classList.remove('active-subsection');
+            staffContent.querySelector(`[data-dept="${deptId}"]`)?.classList.remove('active-dept');
+            // Scroll back to nav grid
+            document.getElementById('deptNavGrid').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+    });
 }
 
 // Copy to clipboard helper
