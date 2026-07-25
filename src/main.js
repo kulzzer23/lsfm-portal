@@ -418,10 +418,17 @@ async function renderProgramDetail() {
         console.error('Error loading broadcasts:', error);
     }
     
+    // Generate shareable link
+    const programUrl = `${window.location.origin}${window.location.pathname}?program=${program.id}`;
+    
     programDetailContent.innerHTML = `
         <div class="program-detail-header">
             <button class="btn-back" onclick="window.history.back(); window.navigateToSection('schedule');">
                 ← Назад к программам
+            </button>
+            
+            <button class="copy-section-link" id="copyProgramLink" style="margin-bottom: 2rem;">
+                🔗 Скопировать ссылку на программу
             </button>
             
             <div class="program-detail-hero">
@@ -491,6 +498,17 @@ async function renderProgramDetail() {
     `;
     
     // Attach event listeners
+    const copyLinkBtn = document.getElementById('copyProgramLink');
+    if (copyLinkBtn) {
+        copyLinkBtn.addEventListener('click', () => {
+            copyToClipboard(programUrl);
+            copyLinkBtn.textContent = '✓ Ссылка скопирована!';
+            setTimeout(() => {
+                copyLinkBtn.innerHTML = '🔗 Скопировать ссылку на программу';
+            }, 2000);
+        });
+    }
+    
     if (isOwner) {
         const editBtn = document.getElementById('editProgramBtn');
         if (editBtn) {
@@ -831,7 +849,7 @@ function loadLeadership() {
             rankName: 'Заместители',
             limit: 4,
             positions: [
-                { name: 'Wu Ji', position: 'Заместитель Директора', phone: '---', photo: 'https://i.imgur.com/TIR7jpA.png' }
+                { name: 'Wu Ji', position: 'Заместитель Директора', phone: '1109', photo: 'https://i.imgur.com/yIoBg4E.png' }
                 // Add your leadership members here
                 // Example: { name: 'John_Smith', position: 'Директор', phone: '555-0001', photo: 'https://example.com/photo.jpg' }
             ]
@@ -926,12 +944,12 @@ function loadStaff() {
             name: 'Отдел Контроля Качества Издательства',
             shortName: 'ОКК Издательства',
             curator: {
-                name: 'Вакансия',
+                name: 'Wu Ji',
                 role: 'Куратор отдела',
-                photo: null
+                photo: 'https://i.imgur.com/yIoBg4E.png'
             },
             ranks: [
-                { rank: 10, rankName: 'Куратор Отдела', limit: 1, members: [] },
+                { rank: 10, rankName: 'Куратор Отдела', limit: 1, members: [{ name: 'Wu Ji', position: 'Куратор', phone: '1109', photo: 'https://i.imgur.com/yIoBg4E.png' }] },
                 { rank: 5, rankName: 'Помощники Куратора и редакторы материала', limit: 2, members: [] }
             ]
         },
@@ -1124,13 +1142,25 @@ window.copyToClipboard = copyToClipboard;
 // Initialize app
 document.addEventListener('DOMContentLoaded', () => {
     checkAuthorAuth();
-    navigateToSection('home');
     
-    // Check if URL has hash for direct navigation
-    if (window.location.hash) {
-        const sectionId = window.location.hash.substring(1);
-        if (sectionId) {
-            setTimeout(() => navigateToSection(sectionId), 100);
+    // Check if URL has program parameter for direct link
+    const urlParams = new URLSearchParams(window.location.search);
+    const programId = urlParams.get('program');
+    
+    if (programId) {
+        // Load programs first, then open the specific program
+        loadPrograms().then(() => {
+            setTimeout(() => viewProgram(parseInt(programId)), 100);
+        });
+    } else {
+        navigateToSection('home');
+        
+        // Check if URL has hash for direct navigation
+        if (window.location.hash) {
+            const sectionId = window.location.hash.substring(1);
+            if (sectionId) {
+                setTimeout(() => navigateToSection(sectionId), 100);
+            }
         }
     }
 });
