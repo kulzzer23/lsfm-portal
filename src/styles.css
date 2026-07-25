@@ -131,6 +131,20 @@ body::before {
     text-transform: uppercase;
 }
 
+.gerb-image {
+    width: 270px;
+    height: 270px;
+    margin-top: 1rem;
+    object-fit: contain;
+    opacity: 0.9;
+    transition: var(--transition);
+}
+
+.gerb-image:hover {
+    opacity: 1;
+    transform: scale(1.05);
+}
+
 /* ========================================
    NAVIGATION
    ======================================== */
