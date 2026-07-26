@@ -15,6 +15,9 @@ let supabaseLoadError = false;
         supabaseLoadError = true;
     }
 })();
+
+// Application State
+const state = {
     currentSection: 'home',
     currentProgram: null,
     currentAuthor: null,
