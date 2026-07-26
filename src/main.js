@@ -10,7 +10,8 @@ const state = {
     currentProgram: null,
     currentAuthor: null,
     programs: [],
-    isEditMode: false
+    isEditMode: false,
+    loadingError: false
 };
 
 // DOM Elements
@@ -299,36 +300,14 @@ async function loadPrograms() {
         if (error) throw error;
         
         state.programs = data || [];
+        state.loadingError = false;
     } catch (error) {
         console.error('Error loading programs:', error);
-        // Sample data for development
-        state.programs = getSamplePrograms();
+        state.programs = [];
+        state.loadingError = true;
     }
     
     renderPrograms();
-}
-
-function getSamplePrograms() {
-    return [
-        {
-            id: 1,
-            title: 'Утреннее шоу',
-            author_id: 'sample1',
-            authors: { name: 'John_Smith' },
-            description: 'Начните свой день с отличной музыки!',
-            image_url: null,
-            created_at: new Date().toISOString()
-        },
-        {
-            id: 2,
-            title: 'Вечерний драйв',
-            author_id: 'sample2',
-            authors: { name: 'Sarah_Johnson' },
-            description: 'Лучшая музыка для дороги домой.',
-            image_url: null,
-            created_at: new Date().toISOString()
-        }
-    ];
 }
 
 function renderPrograms() {
@@ -337,8 +316,30 @@ function renderPrograms() {
     if (state.programs.length === 0) {
         programsContainer.innerHTML = `
             <div style="grid-column: 1/-1; text-align: center; padding: 3rem; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px;">
-                <h3 style="color: var(--text-secondary); margin-bottom: 1rem;">Программы пока не созданы</h3>
-                ${state.currentAuthor ? '<p>Создайте первую программу!</p>' : '<p>Войдите как автор чтобы создать программу</p>'}
+                ${state.loadingError ? `
+                    <div style="margin-bottom: 2rem;">
+                        <div style="font-size: 3rem; margin-bottom: 1rem;">⚠️</div>
+                        <h3 style="color: var(--text-secondary); margin-bottom: 1rem;">Не удалось загрузить программы</h3>
+                        <div style="background: rgba(255, 193, 7, 0.1); border: 2px solid #ffc107; border-radius: 12px; padding: 1.5rem; margin: 1.5rem auto; max-width: 600px; text-align: left;">
+                            <div style="display: flex; align-items: start; gap: 1rem;">
+                                <div style="font-size: 2rem; flex-shrink: 0;">🔒</div>
+                                <div>
+                                    <h4 style="color: #ffc107; margin: 0 0 0.5rem 0; font-size: 1.1rem;">Возможно, Supabase заблокирован в вашей стране</h4>
+                                    <p style="margin: 0; line-height: 1.6; color: var(--text-primary);">
+                                        Если программы не загружаются, попробуйте использовать <strong>VPN</strong> для доступа к сайту. 
+                                        Рекомендуем подключиться к серверам в США или Европе.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="btn-primary" onclick="window.location.reload()" style="margin-top: 1rem;">
+                            🔄 Обновить страницу
+                        </button>
+                    </div>
+                ` : `
+                    <h3 style="color: var(--text-secondary); margin-bottom: 1rem;">Программы пока не созданы</h3>
+                    ${state.currentAuthor ? '<p>Создайте первую программу!</p>' : '<p>Войдите как автор чтобы создать программу</p>'}
+                `}
             </div>
         `;
         return;
