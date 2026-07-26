@@ -888,20 +888,30 @@ function loadLeadership() {
         }
     ];
     
+    // Проверяем, авторизован ли Henry_Urban
+    const isHenryUrban = state.currentAuthor && state.currentAuthor.name === 'Henry_Urban';
+
     leadershipContent.innerHTML = `
-        <button class="copy-section-link" id="copyLeadershipLink">
+        <button class="copy-section-link" id="copyLeadershipLink" style="margin-bottom: 2rem;">
             🔗 Скопировать ссылку на этот раздел
         </button>
         
-        ${leadershipData.map(rankData => `
-            <div class="rank-section">
+        ${leadershipData.map((rankData, rankIndex) => `
+            <div class="rank-section" id="rank-section-${rankIndex}">
                 <div class="rank-header">
                     <div class="rank-title">
                         <span class="rank-badge">${rankData.rank}</span>
                         <span>${rankData.rankName}</span>
                     </div>
-                    <div class="rank-limit">
-                        Лимит: ${rankData.positions.length} / ${rankData.limit} мест
+                    <div style="display: flex; align-items: center; gap: 1rem;">
+                        <div class="rank-limit">
+                            Лимит: ${rankData.positions.length} / ${rankData.limit} мест
+                        </div>
+                        ${isHenryUrban ? `
+                            <button class="btn-primary export-rank-btn" data-rank-index="${rankIndex}" style="padding: 0.5rem 1rem; font-size: 0.85rem; display: flex; align-items: center; gap: 0.5rem;">
+                                📸 PNG
+                            </button>
+                        ` : ''}
                     </div>
                 </div>
                 
@@ -941,6 +951,18 @@ function loadLeadership() {
             setTimeout(() => {
                 copyLinkBtn.innerHTML = '🔗 Скопировать ссылку на этот раздел';
             }, 2000);
+        });
+    }
+
+    // Attach export buttons for each rank section (only for Henry_Urban)
+    if (isHenryUrban) {
+        leadershipContent.querySelectorAll('.export-rank-btn').forEach(btn => {
+            btn.addEventListener('click', async (e) => {
+                const rankIndex = e.currentTarget.dataset.rankIndex;
+                const rankSection = document.getElementById(`rank-section-${rankIndex}`);
+                const rankName = leadershipData[rankIndex].rankName;
+                await exportRankSectionToPNG(rankSection, rankName, btn);
+            });
         });
     }
 }
@@ -1155,9 +1177,60 @@ function fallbackCopyToClipboard(text) {
     document.body.removeChild(textArea);
 }
 
+// Export rank section to PNG function (with transparent background)
+async function exportRankSectionToPNG(rankSection, rankName, button) {
+    const originalText = button.innerHTML;
+    
+    button.innerHTML = '⏳ Создаю...';
+    button.disabled = true;
+
+    try {
+        // Временно скрываем кнопку экспорта
+        button.style.visibility = 'hidden';
+
+        // Используем html2canvas для создания изображения с прозрачным фоном
+        const canvas = await html2canvas(rankSection, {
+            backgroundColor: null, // Прозрачный фон!
+            scale: 2,
+            logging: false,
+            useCORS: true,
+            allowTaint: true
+        });
+
+        // Возвращаем кнопку обратно
+        button.style.visibility = 'visible';
+
+        // Конвертируем canvas в blob
+        canvas.toBlob((blob) => {
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            const timestamp = new Date().toISOString().slice(0, 10);
+            const safeName = rankName.replace(/\s+/g, '_');
+            link.download = `LSFM_${safeName}_${timestamp}.png`;
+            link.href = url;
+            link.click();
+            URL.revokeObjectURL(url);
+
+            button.innerHTML = '✓ Готово!';
+            setTimeout(() => {
+                button.innerHTML = originalText;
+                button.disabled = false;
+            }, 2000);
+        }, 'image/png');
+
+    } catch (error) {
+        console.error('Error exporting to PNG:', error);
+        alert('Ошибка при создании изображения. Попробуйте еще раз.');
+        button.style.visibility = 'visible';
+        button.innerHTML = originalText;
+        button.disabled = false;
+    }
+}
+
 // Make functions available globally
 window.navigateToSection = navigateToSection;
 window.copyToClipboard = copyToClipboard;
+window.exportRankSectionToPNG = exportRankSectionToPNG;
 
 // Initialize app
 document.addEventListener('DOMContentLoaded', () => {
