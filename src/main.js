@@ -1,8 +1,17 @@
-import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 import { supabaseUrl, supabaseKey, TABLES, STORAGE_KEYS } from './config.js';
 
-// Initialize Supabase client
-const supabase = createClient(supabaseUrl, supabaseKey);
+// Безопасная загрузка Supabase SDK
+let supabase = null;
+let supabaseLoadError = false;
+
+try {
+    const { createClient } = await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm');
+    supabase = createClient(supabaseUrl, supabaseKey);
+    console.log('✓ Supabase SDK загружен успешно');
+} catch (err) {
+    console.error('✗ Не удалось загрузить Supabase SDK:', err);
+    supabaseLoadError = true;
+}
 
 // Application State
 const state = {
@@ -288,6 +297,15 @@ async function checkAuthorProgram() {
 
 // Programs Loading
 async function loadPrograms() {
+    // Если SDK не загрузился, сразу помечаем ошибку
+    if (supabaseLoadError || !supabase) {
+        console.error('Supabase SDK недоступен');
+        state.programs = [];
+        state.loadingError = true;
+        renderPrograms();
+        return;
+    }
+
     try {
         const { data, error } = await supabase
             .from(TABLES.programs)
