@@ -868,7 +868,8 @@ function loadLeadership() {
             rankName: 'Заместители',
             limit: 4,
             positions: [
-                { name: 'Wu Ji', position: 'Заместитель Директора', phone: '1109', photo: 'https://i.imgur.com/yIoBg4E.png' }
+                { name: 'Wu Ji', position: 'Заместитель Директора', phone: '1109', photo: 'https://i.imgur.com/yIoBg4E.png' },
+                { name: 'Danil Dolenchuk', position: 'Заместитель Директора', phone: '248888', photo: 'https://i.imgur.com/ftDjJ3m.png' }
                 // Add your leadership members here
                 // Example: { name: 'John_Smith', position: 'Директор', phone: '555-0001', photo: 'https://example.com/photo.jpg' }
             ]
