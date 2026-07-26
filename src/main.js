@@ -4,17 +4,17 @@ import { supabaseUrl, supabaseKey, TABLES, STORAGE_KEYS } from './config.js';
 let supabase = null;
 let supabaseLoadError = false;
 
-try {
-    const { createClient } = await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm');
-    supabase = createClient(supabaseUrl, supabaseKey);
-    console.log('✓ Supabase SDK загружен успешно');
-} catch (err) {
-    console.error('✗ Не удалось загрузить Supabase SDK:', err);
-    supabaseLoadError = true;
-}
-
-// Application State
-const state = {
+// IIFE для безопасной загрузки SDK
+(async () => {
+    try {
+        const { createClient } = await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm');
+        supabase = createClient(supabaseUrl, supabaseKey);
+        console.log('✓ Supabase SDK загружен успешно');
+    } catch (err) {
+        console.error('✗ Не удалось загрузить Supabase SDK:', err);
+        supabaseLoadError = true;
+    }
+})();
     currentSection: 'home',
     currentProgram: null,
     currentAuthor: null,
