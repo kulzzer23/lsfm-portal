@@ -47,7 +47,7 @@ function renderArchive(draws) {
     const totalCount = gfCount + blCount;
     const countStr = totalCount > 0 ? `${totalCount} участник${pluralRu(totalCount)}` : '';
 
-    const link = `/lottery-results.html?slug=${encodeURIComponent(draw.slug)}`;
+    const link = `https://kulzzer23.github.io/lsfm-portal/lottery-results.html?slug=${encodeURIComponent(draw.slug)}`;
 
     return `
       <a href="${link}" class="draw-card">
