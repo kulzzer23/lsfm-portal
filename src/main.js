@@ -369,6 +369,7 @@ function renderPrograms() {
     programsContainer.innerHTML = state.programs.map(program => {
         const authorName = program.authors?.name || 'Неизвестный автор';
         const isOwner = state.currentAuthor && program.author_id === state.currentAuthor.id;
+        const programUrl = `${window.location.origin}${window.location.pathname}?program=${program.id}`;
         
         return `
             <div class="program-card" data-id="${program.id}">
@@ -382,9 +383,12 @@ function renderPrograms() {
                     <h3>${program.title}</h3>
                     <div class="program-host">Автор: ${authorName}</div>
                     <div class="program-description">${program.description || 'Описание скоро появится'}</div>
-                    <div style="margin-top: 1.5rem;">
-                        <button class="btn-primary" onclick="window.viewProgram(${program.id})" style="width: 100%;">
+                    <div style="margin-top: 1.5rem; display: flex; gap: 0.5rem;">
+                        <button class="btn-primary" onclick="window.viewProgram(${program.id})" style="flex: 1;">
                             Подробнее →
+                        </button>
+                        <button class="btn-copy-link" onclick="window.copyProgramLink(event, '${programUrl}', ${program.id})" title="Скопировать ссылку на программу">
+                            🔗
                         </button>
                     </div>
                     ${isOwner ? `

@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LSFM — Лотерея Админ</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="stylesheet" href="/src/lottery-admin.css">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+</head>
+<body>
+
+<!-- ===== LOGIN SCREEN ===== -->
+<div id="loginScreen" class="login-screen">
+    <div class="login-card">
+        <div class="login-logo">
+            <span>🎰</span>
+        </div>
+        <h1>Лотерея LSFM</h1>
+        <p class="login-subtitle">Администраторская панель</p>
+        <form id="loginForm" class="login-form">
+            <div class="form-group">
+                <label>Пароль</label>
+                <input type="password" id="passwordInput" placeholder="Введите пароль..." autocomplete="current-password">
+            </div>
+            <button type="submit" class="btn-primary btn-full">Войти</button>
+            <p id="loginError" class="login-error" style="display:none;">Неверный пароль</p>
+        </form>
+    </div>
+</div>
+
+<!-- ===== ADMIN PANEL ===== -->
+<div id="adminPanel" class="admin-panel" style="display:none;">
+
+    <header class="admin-header">
+        <div class="header-left">
+            <span class="header-logo">🎰</span>
+            <div>
+                <h1>Лотерея LSFM</h1>
+                <p>Система розыгрышей</p>
+            </div>
+        </div>
+        <div class="header-right">
+            <a href="/index.html" class="btn-ghost">← На сайт</a>
+            <button id="logoutBtn" class="btn-ghost">Выйти</button>
+        </div>
+    </header>
+
+    <main class="admin-main">
+
+        <!-- STEP 1: Setup participants -->
+        <div id="stepSetup" class="step-panel active">
+            <div class="step-header">
+                <div class="step-number">01</div>
+                <div>
+                    <h2>Настройка розыгрыша</h2>
+                    <p>Введите название недели и добавьте участников</p>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <label>Название недели / розыгрыша</label>
+                <input type="text" id="weekTitle" class="input-field" placeholder="Неделя 1: 03.08 - 10.08" value="">
+            </div>
+
+            <div class="leagues-grid">
+                <!-- Grand Final -->
+                <div class="league-panel">
+                    <div class="league-header grand-final">
+                        <span>👑</span>
+                        <div>
+                            <h3>Гранд-Финал</h3>
+                            <p>Лидеры — борьба за 1-е и 2-е место</p>
+                        </div>
+                    </div>
+                    <div id="grandFinalList" class="participant-list"></div>
+                    <div class="add-participant-row">
+                        <input type="text" id="gfName" class="input-field" placeholder="Имя участника">
+                        <input type="number" id="gfTickets" class="input-field input-sm" placeholder="Билеты" min="1" value="1">
+                        <button class="btn-add" onclick="addParticipant('grandFinal')">+ Добавить</button>
+                    </div>
+                </div>
+
+                <!-- Basic League -->
+                <div class="league-panel">
+                    <div class="league-header basic-league">
+                        <span>🏅</span>
+                        <div>
+                            <h3>Базовая Лига</h3>
+                            <p>Остальные участники — 3-е место</p>
+                        </div>
+                    </div>
+                    <div id="basicLeagueList" class="participant-list"></div>
+                    <div class="add-participant-row">
+                        <input type="text" id="blName" class="input-field" placeholder="Имя участника">
+                        <input type="number" id="blTickets" class="input-field input-sm" placeholder="Билеты" min="1" value="1">
+                        <button class="btn-add" onclick="addParticipant('basicLeague')">+ Добавить</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step-actions">
+                <button class="btn-primary" onclick="proceedToSpin()">Перейти к розыгрышу →</button>
+            </div>
+        </div>
+
+        <!-- STEP 2: Spin -->
+        <div id="stepSpin" class="step-panel" style="display:none;">
+            <div class="step-header">
+                <div class="step-number">02</div>
+                <div>
+                    <h2>Розыгрыш</h2>
+                    <p id="spinSubtitle">Крутите колесо для каждого этапа</p>
+                </div>
+                <button class="btn-ghost" onclick="goBack()">← Назад</button>
+            </div>
+
+            <!-- Phase Tabs -->
+            <div class="phase-tabs">
+                <button class="phase-tab active" id="tabGF" onclick="switchPhase('grandFinal1')">
+                    <span>👑</span> Гранд-Финал: 1-е место
+                </button>
+                <button class="phase-tab" id="tabGF2" onclick="switchPhase('grandFinal2')" id="tabGF2">
+                    <span>🥈</span> Гранд-Финал: 2-е место
+                </button>
+                <button class="phase-tab" id="tabBL" onclick="switchPhase('basicLeague')">
+                    <span>🏅</span> Базовая Лига: 3-е место
+                </button>
+            </div>
+
+            <!-- Wheel Arena -->
+            <div class="wheel-arena">
+                <div class="wheel-wrapper">
+                    <div class="wheel-pointer">▼</div>
+                    <canvas id="wheelCanvas" width="520" height="520"></canvas>
+                    <div class="wheel-center-cap"></div>
+                </div>
+
+                <!-- Current phase participants legend -->
+                <div class="spin-sidebar">
+                    <h3 id="currentPhaseTitle">Участники</h3>
+                    <div id="participantsLegend" class="legend-list"></div>
+
+                    <div class="spin-controls">
+                        <button id="spinBtn" class="btn-spin" onclick="spinWheel()">
+                            <span class="spin-icon">🎰</span>
+                            Запустить!
+                        </button>
+                        <div id="currentResult" class="current-result" style="display:none;"></div>
+                    </div>
+
+                    <!-- Results summary -->
+                    <div id="resultsSummary" class="results-summary" style="display:none;">
+                        <h3>Результаты</h3>
+                        <div class="result-item" id="res1" style="display:none;">
+                            <span class="result-place gold">🥇 1-е место</span>
+                            <span id="winner1Name" class="result-name"></span>
+                        </div>
+                        <div class="result-item" id="res2" style="display:none;">
+                            <span class="result-place silver">🥈 2-е место</span>
+                            <span id="winner2Name" class="result-name"></span>
+                        </div>
+                        <div class="result-item" id="res3" style="display:none;">
+                            <span class="result-place bronze">🥉 3-е место</span>
+                            <span id="winner3Name" class="result-name"></span>
+                        </div>
+                        <button class="btn-primary btn-full" onclick="proceedToSave()" id="saveBtn" style="display:none;">
+                            💾 Сохранить результаты
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- STEP 3: Save -->
+        <div id="stepSave" class="step-panel" style="display:none;">
+            <div class="step-header">
+                <div class="step-number">03</div>
+                <div>
+                    <h2>Сохранение результатов</h2>
+                    <p>Проверьте данные и сохраните розыгрыш</p>
+                </div>
+            </div>
+
+            <div class="save-card">
+                <h3 id="saveTitlePreview"></h3>
+                <div class="save-results-grid">
+                    <div class="save-result gold">
+                        <div class="save-place">🥇 1-е место</div>
+                        <div id="saveWinner1" class="save-name"></div>
+                        <div class="save-label">Гранд-Финал</div>
+                    </div>
+                    <div class="save-result silver">
+                        <div class="save-place">🥈 2-е место</div>
+                        <div id="saveWinner2" class="save-name"></div>
+                        <div class="save-label">Гранд-Финал</div>
+                    </div>
+                    <div class="save-result bronze">
+                        <div class="save-place">🥉 3-е место</div>
+                        <div id="saveWinner3" class="save-name"></div>
+                        <div class="save-label">Базовая Лига</div>
+                    </div>
+                </div>
+
+                <div class="slug-section">
+                    <label>URL-идентификатор (slug)</label>
+                    <div class="slug-row">
+                        <input type="text" id="slugInput" class="input-field" placeholder="week-1-03-08-10-08">
+                        <button class="btn-ghost" onclick="generateSlug()">Авто</button>
+                    </div>
+                    <p class="slug-hint">Ссылка на результаты: <span id="slugPreview" class="slug-preview">/lottery-results/...</span></p>
+                </div>
+
+                <div class="save-actions">
+                    <button class="btn-ghost" onclick="backToSpin()">← Назад</button>
+                    <button class="btn-primary btn-save" id="finalSaveBtn" onclick="saveResults()">
+                        💾 Сохранить в базу данных
+                    </button>
+                </div>
+
+                <div id="saveStatus" class="save-status" style="display:none;"></div>
+            </div>
+
+            <!-- Saved draw link -->
+            <div id="savedLinkBlock" class="saved-link-block" style="display:none;">
+                <span>✅ Розыгрыш сохранён!</span>
+                <a id="savedLink" href="#" target="_blank" class="saved-link">Открыть страницу результатов →</a>
+            </div>
+        </div>
+
+    </main>
+</div>
+
+<!-- ===== WINNER MODAL ===== -->
+<div id="winnerModal" class="winner-modal-overlay" style="display:none;">
+    <div class="winner-modal">
+        <div class="winner-fireworks" id="fireworksContainer"></div>
+        <div class="winner-crown">👑</div>
+        <p class="winner-label" id="winnerPlaceLabel"></p>
+        <h2 class="winner-name" id="winnerNameDisplay"></h2>
+        <p class="winner-sub" id="winnerTicketsInfo"></p>
+        <button class="btn-primary btn-winner-close" onclick="closeWinnerModal()">
+            Продолжить →
+        </button>
+    </div>
+</div>
+
+<script type="module" src="/src/lottery-admin.js"></script>
+</body>
+</html>

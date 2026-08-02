@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LSFM — Результаты розыгрыша</title>
+    <meta name="description" content="Результаты лотереи Los-Santos FM">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="stylesheet" href="/src/lottery-results.css">
+</head>
+<body>
+
+<header class="results-header">
+    <a href="/index.html" class="back-link">← Los-Santos FM</a>
+    <div class="header-badge">🎰 Лотерея LSFM</div>
+</header>
+
+<!-- Loading state -->
+<div id="loadingState" class="state-screen">
+    <div class="spinner"></div>
+    <p>Загружаем результаты...</p>
+</div>
+
+<!-- Error state -->
+<div id="errorState" class="state-screen" style="display:none;">
+    <div class="state-icon">😔</div>
+    <h2>Розыгрыш не найден</h2>
+    <p>Возможно, ссылка устарела или неверна.</p>
+    <a href="/index.html" class="btn-primary">На главную</a>
+</div>
+
+<!-- Results -->
+<main id="resultsContent" class="results-main" style="display:none;">
+
+    <!-- Hero -->
+    <div class="results-hero">
+        <div class="hero-glow"></div>
+        <div class="hero-label">LSFM LOTTERY</div>
+        <h1 id="drawTitle" class="draw-title"></h1>
+        <div id="drawDate" class="draw-date"></div>
+    </div>
+
+    <!-- Winners Podium -->
+    <section class="podium-section">
+        <div class="podium-grid">
+
+            <!-- 2nd place (left) -->
+            <div class="podium-card silver" data-place="2">
+                <div class="podium-rank-badge silver">2</div>
+                <div class="podium-icon">🥈</div>
+                <div class="podium-place-label">2-е место</div>
+                <div class="podium-league">Гранд-Финал</div>
+                <div id="winner2" class="podium-name"></div>
+                <div class="podium-bar silver-bar"></div>
+            </div>
+
+            <!-- 1st place (centre, tallest) -->
+            <div class="podium-card gold champion" data-place="1">
+                <div class="champion-crown">👑</div>
+                <div class="podium-rank-badge gold">1</div>
+                <div class="podium-icon">🥇</div>
+                <div class="podium-place-label">1-е место</div>
+                <div class="podium-league">Гранд-Финал</div>
+                <div id="winner1" class="podium-name"></div>
+                <div class="podium-bar gold-bar"></div>
+                <div class="champion-sparkles">
+                    <span class="sparkle">✦</span>
+                    <span class="sparkle">✦</span>
+                    <span class="sparkle">✦</span>
+                </div>
+            </div>
+
+            <!-- 3rd place (right) -->
+            <div class="podium-card bronze" data-place="3">
+                <div class="podium-rank-badge bronze">3</div>
+                <div class="podium-icon">🥉</div>
+                <div class="podium-place-label">3-е место</div>
+                <div class="podium-league">Базовая Лига</div>
+                <div id="winner3" class="podium-name"></div>
+                <div class="podium-bar bronze-bar"></div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Participants Detail -->
+    <section class="participants-section">
+        <div class="section-container">
+
+            <div class="league-detail-grid">
+
+                <!-- Grand Final participants -->
+                <div class="league-detail-card">
+                    <div class="ld-header grand">
+                        <span>👑</span>
+                        <div>
+                            <h3>Гранд-Финал</h3>
+                            <p>Участники розыгрыша 1-го и 2-го места</p>
+                        </div>
+                    </div>
+                    <div id="gfParticipants" class="ld-list"></div>
+                </div>
+
+                <!-- Basic League participants -->
+                <div class="league-detail-card">
+                    <div class="ld-header basic">
+                        <span>🏅</span>
+                        <div>
+                            <h3>Базовая Лига</h3>
+                            <p>Участники розыгрыша 3-го места</p>
+                        </div>
+                    </div>
+                    <div id="blParticipants" class="ld-list"></div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Share -->
+    <section class="share-section">
+        <div class="section-container share-inner">
+            <span class="share-label">🔗 Поделиться результатами:</span>
+            <button class="btn-copy" id="copyBtn" onclick="copyLink()">Копировать ссылку</button>
+        </div>
+    </section>
+
+    <footer class="results-footer">
+        <p>© 2026 Los-Santos FM · Радиоцентр Синей Федерации</p>
+        <a href="/admin-lottery.html" class="footer-admin-link">Провести новый розыгрыш →</a>
+    </footer>
+
+</main>
+
+<script type="module" src="/src/lottery-results.js"></script>
+</body>
+</html>

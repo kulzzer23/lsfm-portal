@@ -283,6 +283,20 @@ body::before {
     filter: grayscale(0);
 }
 
+/* Lottery nav link (anchor styled as nav-btn) */
+a.nav-btn {
+    text-decoration: none;
+}
+a.nav-lottery-link {
+    border-color: rgba(255, 215, 0, 0.3);
+    color: #ffd700;
+}
+a.nav-lottery-link:hover {
+    background: rgba(255, 215, 0, 0.1);
+    border-color: #ffd700;
+    color: #ffd700;
+}
+
 .nav-text {
     font-weight: 600;
 }
@@ -1437,6 +1451,37 @@ body::before {
     border-color: var(--accent-color);
     color: var(--bg-dark);
     transform: translateY(-2px);
+}
+
+/* Copy link button on program cards */
+.btn-copy-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    min-width: 44px;
+    height: 44px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    color: var(--text-primary);
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: var(--transition);
+    flex-shrink: 0;
+}
+
+.btn-copy-link:hover {
+    background: var(--accent-color);
+    border-color: var(--accent-color);
+    color: var(--bg-dark);
+    transform: translateY(-2px);
+}
+
+.btn-copy-link.copied {
+    background: #22c55e;
+    border-color: #22c55e;
+    color: white;
 }
 
 /* ========================================

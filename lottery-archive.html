@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LSFM — Розыгрыши</title>
+    <meta name="description" content="Все розыгрыши лотереи Los-Santos FM">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="stylesheet" href="/src/lottery-archive.css">
+</head>
+<body>
+
+<header class="arch-header">
+    <a href="/index.html" class="back-link">← Los-Santos FM</a>
+    <div class="header-center">
+        <span class="header-logo">🎰</span>
+        <div>
+            <h1>Лотерея LSFM</h1>
+            <p>Архив розыгрышей</p>
+        </div>
+    </div>
+    <a href="/admin-lottery.html" class="btn-admin">Провести розыгрыш</a>
+</header>
+
+<!-- Loading -->
+<div id="loadingState" class="state-screen">
+    <div class="spinner"></div>
+    <p>Загружаем розыгрыши...</p>
+</div>
+
+<!-- Empty -->
+<div id="emptyState" class="state-screen" style="display:none;">
+    <div class="state-icon">🎰</div>
+    <h2>Розыгрышей пока нет</h2>
+    <p>Первый розыгрыш ещё не проводился.</p>
+    <a href="/admin-lottery.html" class="btn-primary">Провести первый розыгрыш</a>
+</div>
+
+<!-- Error -->
+<div id="errorState" class="state-screen" style="display:none;">
+    <div class="state-icon">😔</div>
+    <h2>Ошибка загрузки</h2>
+    <p>Не удалось получить данные. Попробуйте обновить страницу.</p>
+    <button class="btn-primary" onclick="location.reload()">Обновить</button>
+</div>
+
+<!-- Archive list -->
+<main id="archiveContent" class="archive-main" style="display:none;">
+
+    <div class="archive-hero">
+        <div class="hero-glow"></div>
+        <p class="hero-label">LSFM LOTTERY</p>
+        <h2 class="hero-title">Все розыгрыши</h2>
+        <p class="hero-sub" id="drawCount"></p>
+    </div>
+
+    <div class="archive-container">
+        <div id="drawsList" class="draws-grid"></div>
+    </div>
+
+    <footer class="arch-footer">
+        <p>© 2026 Los-Santos FM · Радиоцентр Синей Федерации</p>
+    </footer>
+</main>
+
+<script type="module" src="/src/lottery-archive.js"></script>
+</body>
+</html>

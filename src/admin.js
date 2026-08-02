@@ -5,7 +5,7 @@ import { supabaseUrl, supabaseKey, TABLES } from './config.js';
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 // Admin password
-const ADMIN_PASSWORD = 'admin2026';
+const ADMIN_PASSWORD = 'kulzz';
 
 // State
 const state = {
